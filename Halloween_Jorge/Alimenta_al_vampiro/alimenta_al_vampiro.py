@@ -58,16 +58,25 @@ continue_text = font.render("Pulsa cualquier tecla para CONTINUAR JUGANDO", True
 continue_rect = continue_text.get_rect()
 continue_rect.center = (window_width // 2, window_height // 2 + 32)
 
+surprise_text = font.render("ENHORABUENA! Tu vampiro ya se ha saciado", True, red, darkred)
+surprise_text2 = font.render("y ahora te mira seductoramente", True, red, darkred)
+surprise_text_rect = surprise_text.get_rect()
+surprise_text_rect.center = (window_width // 2 - 170, window_height // 2)
+surprise_text2_rect = surprise_text.get_rect()
+surprise_text2_rect.center = (window_width // 2 - 170, window_height // 2+50)
+
 # Establecer sonidos y música
 blood_sound = pygame.mixer.Sound("sangre_sonido.wav")
 miss_sound = pygame.mixer.Sound("error_sonido.wav")
 miss_sound.set_volume(1)
 pygame.mixer.music.load("background_music.wav")
+game_over_sound = pygame.mixer.Sound("game_over_sonido.wav")
+surprise_sound=pygame.mixer.Sound("surprise_sonido.wav")
 
 # Establecer imágenes
 player_image = pygame.image.load("vampiro.png")
 player_rect = player_image.get_rect()
-player_rect.left = 32
+player_rect.left = 10
 player_rect.centery = window_height // 2
 
 blood_image = pygame.image.load("sangre.png")
@@ -78,6 +87,14 @@ blood_rect.y = random.randint(64, window_height - 32)  # Lo desplazamos 64 pixel
 # de la pantalla y que le reste 32, así si aleatoriamente la pusiese abajo del tod coincidiendo con la parte superior
 # de la imagen, no desaparecería, porque hay un límite de cuanto de abajo puede ponerla. 32 exactamente por que es
 # el tamaño de la imagen
+
+game_over_image = pygame.image.load("game_over.png")
+game_over_image_rect = game_over_image.get_rect()
+game_over_image_rect.center = (window_width // 2, window_height // 2)
+
+nico_seductor_image = pygame.image.load("nico.png")
+nico_seductor_image_rect = nico_seductor_image.get_rect()
+nico_seductor_image_rect.center = (window_width // 2+250, window_height // 2)
 
 # Bucle principal del juego
 pygame.mixer.music.play(-1, 0.0)  # El -1 indica un loop infinito y el 0.0 es que empieza desde el principio
@@ -127,8 +144,10 @@ while running:
 
     # Verificar el game over
     if player_lives == 0:
+        display_surface.blit(game_over_image, game_over_image_rect)
         display_surface.blit(game_over_text, game_over_rect)
         display_surface.blit(continue_text, continue_rect)
+        game_over_sound.play()
         pygame.display.update()
 
         # Parar el juego hasta que el jugador presione una tecla que hará empezar el juego nuevamente
@@ -138,13 +157,29 @@ while running:
             for event in pygame.event.get():
                 # El jugador quiere jugar de nuevo
                 if event.type == pygame.KEYDOWN:
-                    socre = 0
+                    score = 0
                     player_lives = player_starting_lives
                     player_rect.y = window_height // 2
                     blood_velocity = blood_starting_velocity
                     pygame.mixer.music.play(-1, 0.0)
                     is_paused = False
                 # El jugador no quiere jugar más
+                if event.type == pygame.QUIT:
+                    is_paused = False
+                    running = False
+
+    # Insertamos la sorpresa
+    if score == 60:
+        display_surface.blit(nico_seductor_image, nico_seductor_image_rect)
+        display_surface.blit(surprise_text, surprise_text_rect)
+        display_surface.blit(surprise_text2, surprise_text2_rect)
+        surprise_sound.play(-1)
+        pygame.display.update()
+        pygame.mixer.music.stop()
+        is_paused = True
+        while is_paused:
+            for event in pygame.event.get():
+                # Paramos el juego, ha llegado al final
                 if event.type == pygame.QUIT:
                     is_paused = False
                     running = False
