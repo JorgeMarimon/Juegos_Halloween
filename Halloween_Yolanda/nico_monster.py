@@ -7,18 +7,18 @@ pygame.init()
 WINDOW_WIDTH = 1200
 WINDOW_HEIGHT = 700
 display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-pygame.display.set_caption("Fantasma Gayr")
+pygame.display.set_caption("Nico Monster")
 
 #Set FPS and Clock
 FPS = 60
 clock = pygame.time.Clock()
 
-#Define Classes
+#Clases
 class Game():
-    """A class to control gameplay"""
+    """Clase para control del juego"""
     def __init__(self, player, monster_group):
-        """Initilize the game object"""
-        #Set game values
+        """Inicializar variables del juego"""
+        #Set valores juego
         self.score = 0
         self.round_number = 0
 
@@ -28,13 +28,13 @@ class Game():
         self.player = player
         self.monster_group = monster_group
 
-        #Set sounds and music
+        #Set musica
         self.next_level_sound = pygame.mixer.Sound("next_level.wav")
 
-        #Set font
-        self.font = pygame.font.Font("Abrushow.ttf", 24)
+        #Set letra
+        self.font = pygame.font.Font("leadcoat.ttf", 24)
 
-        #Set images
+        #Set imagenes
         blue_image = pygame.image.load("blue_monster.png")
         green_image = pygame.image.load("green_monster.png")
         purple_image = pygame.image.load("purple_monster.png")
@@ -310,7 +310,7 @@ my_monster_group = pygame.sprite.Group()
 
 #Create a game object
 my_game = Game(my_player, my_monster_group)
-my_game.pause_game("Monster Wrangler", "Press 'Enter' to begin")
+my_game.pause_game("Nico Monster", "Press 'Enter' to begin")
 my_game.start_new_round()
 
 #The main game loop
