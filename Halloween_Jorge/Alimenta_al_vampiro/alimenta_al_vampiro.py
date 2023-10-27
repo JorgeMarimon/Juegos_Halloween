@@ -12,6 +12,7 @@ pygame.display.set_caption("Alimenta al Vampiro")  # El título de la ventana
 # Establecer FPS y reloj
 FPS = 60
 clock = pygame.time.Clock()
+delay = 1.5
 
 # Establecer valores del juego (estableces las variables constantes que usaremos para controlar el juego)
 player_starting_lives = 5
@@ -63,15 +64,26 @@ surprise_text2 = font.render("y ahora te mira seductoramente", True, red, darkre
 surprise_text_rect = surprise_text.get_rect()
 surprise_text_rect.center = (window_width // 2 - 170, window_height // 2)
 surprise_text2_rect = surprise_text.get_rect()
-surprise_text2_rect.center = (window_width // 2 - 170, window_height // 2+50)
+surprise_text2_rect.center = (window_width // 2 - 170, window_height // 2 + 50)
 
 # Establecer sonidos y música
 blood_sound = pygame.mixer.Sound("sangre_sonido.wav")
+
 miss_sound = pygame.mixer.Sound("error_sonido.wav")
 miss_sound.set_volume(1)
+
 pygame.mixer.music.load("background_music.wav")
+background_volume = 0.5
+pygame.mixer.music.set_volume(background_volume)
+
 game_over_sound = pygame.mixer.Sound("game_over_sonido.wav")
-surprise_sound=pygame.mixer.Sound("surprise_sonido.wav")
+game_over_sound.set_volume(1)
+
+surprise_sound = pygame.mixer.Sound("surprise_sonido.wav")
+
+nico_game_over_sound = pygame.mixer.Sound("nico_derrota_sonido.wav")
+
+nico_victory_sound = pygame.mixer.Sound("nico_hetero.wav")
 
 # Establecer imágenes
 player_image = pygame.image.load("vampiro.png")
@@ -86,7 +98,7 @@ blood_rect.y = random.randint(64, window_height - 32)  # Lo desplazamos 64 pixel
 # así nunca llegará más arriba, puesto que ahí tenemos la cabecera con los textos y luego le decimos que coja el alto
 # de la pantalla y que le reste 32, así si aleatoriamente la pusiese abajo del tod coincidiendo con la parte superior
 # de la imagen, no desaparecería, porque hay un límite de cuanto de abajo puede ponerla. 32 exactamente por que es
-# el tamaño de la imagen
+# el tamaño de la imagen.
 
 game_over_image = pygame.image.load("game_over.png")
 game_over_image_rect = game_over_image.get_rect()
@@ -94,7 +106,11 @@ game_over_image_rect.center = (window_width // 2, window_height // 2)
 
 nico_seductor_image = pygame.image.load("nico.png")
 nico_seductor_image_rect = nico_seductor_image.get_rect()
-nico_seductor_image_rect.center = (window_width // 2+250, window_height // 2)
+nico_seductor_image_rect.center = (window_width // 2 + 250, window_height // 2)
+
+nico_lose_image = pygame.image.load("nico_lose.png")
+nico_lose_image_rect = nico_lose_image.get_rect()
+nico_lose_image_rect.center = (window_width // 2 + 400, window_height // 2)
 
 # Bucle principal del juego
 pygame.mixer.music.play(-1, 0.0)  # El -1 indica un loop infinito y el 0.0 es que empieza desde el principio
@@ -144,11 +160,15 @@ while running:
 
     # Verificar el game over
     if player_lives == 0:
+
         display_surface.blit(game_over_image, game_over_image_rect)
         display_surface.blit(game_over_text, game_over_rect)
         display_surface.blit(continue_text, continue_rect)
+        display_surface.blit(nico_lose_image, nico_lose_image_rect)
         game_over_sound.play()
         pygame.display.update()
+        pygame.time.delay(int(delay * 1000))
+        nico_game_over_sound.play()
 
         # Parar el juego hasta que el jugador presione una tecla que hará empezar el juego nuevamente
         pygame.mixer.music.stop()
@@ -173,9 +193,11 @@ while running:
         display_surface.blit(nico_seductor_image, nico_seductor_image_rect)
         display_surface.blit(surprise_text, surprise_text_rect)
         display_surface.blit(surprise_text2, surprise_text2_rect)
-        surprise_sound.play(-1)
+        surprise_sound.play()
         pygame.display.update()
         pygame.mixer.music.stop()
+        pygame.time.delay(int(delay * 1000))
+        nico_victory_sound.play()
         is_paused = True
         while is_paused:
             for event in pygame.event.get():
