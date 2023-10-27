@@ -115,7 +115,7 @@ class Fantasma(pygame.sprite.Sprite):
         """Inicializar el fantasma"""
         pass
 
-    def actualizar(self):
+    def update(self):
         """Actualizar el fantasma"""
         pass
     
