@@ -10,6 +10,7 @@ display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption("Nico Monster")
 
 #Set FPS and Clock
+#60 segundos
 FPS = 60
 clock = pygame.time.Clock()
 
@@ -18,7 +19,7 @@ class Game():
     """Clase para control del juego"""
     def __init__(self, player, monster_group):
         """Inicializar variables del juego"""
-        #Set valores juego
+        #Set valores juego: puntualición se inicia en cero y ronda en 0
         self.score = 0
         self.round_number = 0
 
@@ -32,72 +33,86 @@ class Game():
         self.next_level_sound = pygame.mixer.Sound("next_level.wav")
 
         #Set letra
-        self.font = pygame.font.Font("leadcoat.ttf", 24)
+        self.font = pygame.font.Font("leadcoat.ttf", 30)
 
         #Set imagenes
         blue_image = pygame.image.load("blue_monster.png")
         green_image = pygame.image.load("green_monster.png")
         purple_image = pygame.image.load("purple_monster.png")
         yellow_image = pygame.image.load("yellow_monster.png")
-        #This list cooresponds to the monster_type attribute int 0 -> blue, 1 -> green, 2 -> purple, 3 -> yellow
+
+        #Lista para mostrar una imagen de monstruo segun el atributo monster_type int 0 -> blue, 1 -> green, 2 -> purple, 3 -> yellow
         self.target_monster_images = [blue_image, green_image, purple_image, yellow_image]
 
         self.target_monster_type = random.randint(0,3)
+
+        #Se asigna la imagen del monstruo correspondiente al tipo seleccionado aleatoriamente.
+        # La imagen se obtiene de la lista target_monster_images
+        # usando el valor almacenado en self.target_monster_type.
+        # La imagen seleccionada se almacena en la variable self.target_monster_image.
         self.target_monster_image = self.target_monster_images[self.target_monster_type]
 
+        #Con el get_rect() renderizamos la imagen aleatoria anterior self.target_monster_image
+        # y se almacena en la variable self.target_monster_rect
         self.target_monster_rect = self.target_monster_image.get_rect()
+
+        #Posiciona la imagen en el centro del eje horizontal
         self.target_monster_rect.centerx = WINDOW_WIDTH//2
+        #A 30px del top de la ventana
         self.target_monster_rect.top = 30
 
     def update(self):
-        """Update our game object"""
+        """Actualiza el objeto juego"""
+        #Código para medir el tiempo en segundos en un juego
+        #Resetea en 0 de nuevo
         self.frame_count += 1
         if self.frame_count == FPS:
             self.round_time += 1
             self.frame_count = 0
 
-        #Check for collisions
+        #Check de colisiones de objetos
         self.check_collisions()
 
     def draw(self):
-        """Draw the HUD and other to the display"""
-        #Set colors
+        """Interfaz del juego"""
+        #Set colores
         WHITE = (255, 255, 255)
         BLUE = (20, 176, 235)
         GREEN = (87, 201, 47)
         PURPLE = (226, 73, 243)
         YELLOW = (243, 157, 20)
 
-        #Add the monster colors to a list where the index of the color matches target_monster_images
+        #Añado colores de monstruos a la lista (matches target_monster_images)
         colors = [BLUE, GREEN, PURPLE, YELLOW]
 
-        #Set text
-        catch_text = self.font.render("Current Catch", True, WHITE)
+        #Set textos
+        catch_text = self.font.render("Objetivo", True, WHITE)
         catch_rect = catch_text.get_rect()
         catch_rect.centerx = WINDOW_WIDTH//2
         catch_rect.top = 5
 
-        score_text = self.font.render("Score: " + str(self.score), True, WHITE)
+        score_text = self.font.render("Puntos: " + str(self.score), True, WHITE)
         score_rect = score_text.get_rect()
         score_rect.topleft = (5, 5)
 
-        lives_text = self.font.render("Lives: " + str(self.player.lives), True, WHITE)
+        lives_text = self.font.render("Vidas: " + str(self.player.lives), True, WHITE)
         lives_rect = lives_text.get_rect()
         lives_rect.topleft = (5, 35)
 
-        round_text = self.font.render("Current Round: " + str(self.round_number), True, WHITE)
+        round_text = self.font.render("Ronda: " + str(self.round_number), True, WHITE)
         round_rect = round_text.get_rect()
         round_rect.topleft = (5, 65)
 
-        time_text = self.font.render("Round Time: " + str(self.round_time), True, WHITE)
+        time_text = self.font.render("Tiempo Ronda: " + str(self.round_time), True, WHITE)
         time_rect = time_text.get_rect()
         time_rect.topright = (WINDOW_WIDTH - 10, 5)
 
-        warp_text = self.font.render("Warps: " + str(self.player.warps), True, WHITE)
+        #Usamos el objeto player creado en la clase Game
+        warp_text = self.font.render("Velocidad: " + str(self.player.warps), True, WHITE)
         warp_rect = warp_text.get_rect()
         warp_rect.topright = (WINDOW_WIDTH - 10, 35)
 
-        #Blit the HUD
+        #Blit la interfaz, renderizar lo anterior en la pantalla
         display_surface.blit(catch_text, catch_rect)
         display_surface.blit(score_text, score_rect)
         display_surface.blit(round_text, round_rect)
@@ -106,37 +121,43 @@ class Game():
         display_surface.blit(warp_text, warp_rect)
         display_surface.blit(self.target_monster_image, self.target_monster_rect)
 
+        #Dibujamos el rectangulo que rodea el monstruo, el color de la línea será el color del monstruo
         pygame.draw.rect(display_surface, colors[self.target_monster_type], (WINDOW_WIDTH//2 - 32, 30, 64, 64), 2)
+        #Dibujamos el rectangulo de la zona de juego, el color de la línea será el color del monstruo tambien
         pygame.draw.rect(display_surface, colors[self.target_monster_type], (0, 100, WINDOW_WIDTH, WINDOW_HEIGHT-200), 4)
-    
+
     def check_collisions(self):
-        """Check for collisions between player and monsters"""
-        #Check for collision between a player and an indiviaual monster
-        #WE must test the type of the monster to see if it matches the type of our target monster
+        """Check colisiones entre jugador y monstruo de color especifico"""
+        #Check monster.type si coincide con el color target
         collided_monster = pygame.sprite.spritecollideany(self.player, self.monster_group)
 
-        #We collided with a monster
+        #Si colisiona con un monstruo
         if collided_monster:
-            #Caught the correct monster
+
+            #Ha colisionado con el monstruo correcto (target)
             if collided_monster.type == self.target_monster_type:
                 self.score += 100*self.round_number
-                #Remove caught monster
+
+                #Elimina el monstruo de la pantalla
                 collided_monster.remove(self.monster_group)
+
+                #Si hay más monstruos en la pantalla
+                #Selecciona nuevo target
                 if (self.monster_group):
-                    #There are more monsters to catch
                     self.player.catch_sound.play()
                     self.choose_new_target()
                 else:
-                    #The round is complete
+                    #Empieza ronda nueva y se resetea el juego
                     self.player.reset()
                     self.start_new_round()
-            #Caught the wrong monster
+
+            #Si captura el monstruo incorrecto
             else:
                 self.player.die_sound.play()
                 self.player.lives -= 1
-                #Check for game over
+                #Check game over
                 if self.player.lives <= 0:
-                    self.pause_game("Final Score: " + str(self.score), "Press 'Enter' to play again")
+                    self.pause_game("Puntuación final: " + str(self.score), "Pulsa 'Enter' para jugar de nuevo")
                     self.reset_game()
                 self.player.reset()
 
@@ -271,49 +292,53 @@ class Player(pygame.sprite.Sprite):
 
 
 class Monster(pygame.sprite.Sprite):
-    """A class to create enemy monster objects"""
+    """Clase para crear una imagen de monstruo"""
+    #Le paso las cordenadas, el parametro imagen y type
     def __init__(self, x, y, image, monster_type):
-        """Initialize the monster"""
+        """Inicializo el monstruo"""
         super().__init__()
         self.image = image
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
 
-        #Monster type is an int 0 -> blue, 1 -> green, 2 -> purple, 3 -> yellow
+        #Monster type (int 0 -> blue, 1 -> green, 2 -> purple, 3 -> yellow)
         self.type = monster_type
 
-        #Set random motion
+        #Set random para el movimiento
+        #-1 se mueve hacia la izquierda y 1 se mueve a la derecha
         self.dx = random.choice([-1, 1])
         self.dy = random.choice([-1, 1])
         self.velocity = random.randint(1, 5)
 
-
     def update(self):
-        """Update the monster"""
+        """Actualizar la posición del objeto en función de las variables dx, dy, y velocity"""
         self.rect.x += self.dx*self.velocity
         self.rect.y += self.dy*self.velocity
 
-        #Bounce the monster off the edges of the display
+        #Rebote del monstruo en los límites de la pantalla horizontal
         if self.rect.left <= 0 or self.rect.right >= WINDOW_WIDTH:
+            #Invierte la dirección del movimiento en el eje x del monstruo *-1
             self.dx = -1*self.dx
+        # Rebote del monstruo en los límites de la pantalla vertical
         if self.rect.top <= 100 or self.rect.bottom >= WINDOW_HEIGHT - 100:
+            # Invierte la dirección del movimiento en el eje y del monstruo *-1
             self.dy = -1*self.dy
 
 
-#Create a player group and Player object
+#Crear el objeto grupo de jugador y mi objeto jugador
 my_player_group = pygame.sprite.Group()
 my_player = Player()
 my_player_group.add(my_player)
 
-#Create a monster group.
+#Crear el objeto de monstruos
 my_monster_group = pygame.sprite.Group()
 
-#Create a game object
+#Creo el objeto juego con mi jugador y el grupo de monstruos
 my_game = Game(my_player, my_monster_group)
 my_game.pause_game("Nico Monster", "Press 'Enter' to begin")
 my_game.start_new_round()
 
-#The main game loop
+#Bucle juego principal
 running = True
 while running:
     #Check to see if user wants to quit
