@@ -163,30 +163,33 @@ class Game():
 
 
     def start_new_round(self):
-        """Populate board with new monsters"""
-        #Provide a score bonus based on how quickly the round was finished
+        """Llenar pantalla con monstruos"""
+        #Puntuación extra si termina la ronda más rápido
         self.score += int(10000*self.round_number/(1 + self.round_time))
 
-        #Reset round values
+        #Resetea valores ronda
         self.round_time = 0
         self.frame_count = 0
         self.round_number += 1
         self.player.warps += 1
 
-        #Remove any remaining monsters from a game reset
+        #Limpiamos monstruos de la pantalla al hacer el reset de nueva ronda
         for monster in self.monster_group:
             self.monster_group.remove(monster)
 
-        #Add monsters to the monster group
+        #Añadimos los cuatro monstruos al grupo con pòsicion random
+        #Si vamos a la clase Monstruo le tenemos que pasar:
+        #self, x, y, image (esto es una lista), monstrer_type (coincide con la posicion de la lista de imagenes)
         for i in range(self.round_number):
             self.monster_group.add(Monster(random.randint(0, WINDOW_WIDTH - 64), random.randint(100, WINDOW_HEIGHT-164), self.target_monster_images[0], 0))
             self.monster_group.add(Monster(random.randint(0, WINDOW_WIDTH - 64), random.randint(100, WINDOW_HEIGHT-164), self.target_monster_images[1], 1))
             self.monster_group.add(Monster(random.randint(0, WINDOW_WIDTH - 64), random.randint(100, WINDOW_HEIGHT-164), self.target_monster_images[2], 2))
             self.monster_group.add(Monster(random.randint(0, WINDOW_WIDTH - 64), random.randint(100, WINDOW_HEIGHT-164), self.target_monster_images[3], 3))
 
-        #Choose a new target monster
+        #Elige un nuevo objetivo de monstruo
         self.choose_new_target()
 
+        #Sonido que indica nuevo nivel
         self.next_level_sound.play()
 
     def choose_new_target(self):
@@ -333,7 +336,8 @@ my_player_group.add(my_player)
 #Crear el objeto de monstruos
 my_monster_group = pygame.sprite.Group()
 
-#Creo el objeto juego con mi jugador y el grupo de monstruos
+#Instancio objeto juego con mi jugador y el grupo de monstruos
+#Llamno a las funciones de la clase Game
 my_game = Game(my_player, my_monster_group)
 my_game.pause_game("Nico Monster", "Press 'Enter' to begin")
 my_game.start_new_round()
