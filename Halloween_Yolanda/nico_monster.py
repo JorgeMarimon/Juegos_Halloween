@@ -157,7 +157,7 @@ class Game():
                 self.player.lives -= 1
                 #Check game over
                 if self.player.lives <= 0:
-                    self.pause_game("Puntuación final: " + str(self.score), "Pulsa 'Enter' para jugar de nuevo")
+                    self.pause_game("Puntuacion final: " + str(self.score), "Pulsa 'Enter' para jugar de nuevo", "NO ERES EL MAS HETERO")
                     self.reset_game()
                 self.player.reset()
 
