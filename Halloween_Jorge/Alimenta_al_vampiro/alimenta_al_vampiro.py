@@ -25,6 +25,8 @@ buffer_distance = 100
 score = 0
 player_lives = player_starting_lives
 blood_velocity = blood_starting_velocity
+
+tricks = 0
 trick_velocity = 30
 
 # Establecer colores
@@ -32,9 +34,11 @@ red = (255, 0, 0)
 darkred = (80, 0, 0)
 white = (255, 255, 255)
 black = (0, 0, 0)
+pink = (255, 20, 147)
 
 # Establecer fuentes
 font = pygame.font.Font('faceYourFears.ttf', 32)
+font_small = pygame.font.Font('faceYourFears.ttf', 20)  # Fuente más pequeño
 
 # Establecer texto
 score_text = font.render("Puntuación: " + str(score), True, red, black)
@@ -68,6 +72,13 @@ surprise_text_rect.center = (window_width // 2 - 170, window_height // 2)
 surprise_text2_rect = surprise_text.get_rect()
 surprise_text2_rect.center = (window_width // 2 - 170, window_height // 2 + 50)
 
+trick_text = font.render("Te has comido demasiados penes alados!", True, pink, black)
+trick_text2 = font.render("No hay que abusar. Tu pierdes", True, pink, black)
+trick_text_rect = trick_text.get_rect()
+trick_text_rect.center = (window_width // 2 - 100, window_height // 2)
+trick_text2_rect = trick_text2.get_rect()
+trick_text2_rect.center = (window_width // 2 - 100, window_height // 2 + 50)
+
 # Establecer sonidos y música
 blood_sound = pygame.mixer.Sound("sangre_sonido.wav")
 
@@ -89,11 +100,19 @@ nico_victory_sound = pygame.mixer.Sound("nico_hetero.wav")
 
 error_trick_sound = pygame.mixer.Sound("error_pene_sound.wav")
 
+trick_game_over_sound = pygame.mixer.Sound("trick_game_over_sound.wav")
+
+intro_sound = pygame.mixer.Sound("intro_sonido.wav")
+
+
 # Establecer imágenes
 player_image = pygame.image.load("vampiro.png")
 player_rect = player_image.get_rect()
 player_rect.left = 10
 player_rect.centery = window_height // 2
+
+player_image_opening = pygame.image.load("vampiro_grande.png")
+player_rect_opening = player_image_opening.get_rect()
 
 blood_image = pygame.image.load("sangre.png")
 blood_image_rect = blood_image.get_rect()
@@ -103,6 +122,9 @@ blood_image_rect.y = random.randint(64, window_height - 32)  # Lo desplazamos 64
 # de la pantalla y que le reste 32, así si aleatoriamente la pusiese abajo del tod coincidiendo con la parte superior
 # de la imagen, no desaparecería, porque hay un límite de cuanto de abajo puede ponerla. 32 exactamente por que es
 # el tamaño de la imagen.
+
+blood_image_opening = pygame.image.load("sangre_grande.png")
+blood_image_rect_opening = blood_image_opening.get_rect()
 
 game_over_image = pygame.image.load("game_over.png")
 game_over_image_rect = game_over_image.get_rect()
@@ -121,8 +143,87 @@ trick_image_rect = trick_image.get_rect()
 trick_image_rect.x = window_width + buffer_distance
 trick_image_rect.y = random.randint(64, window_height - 32)
 
+trick_image_opening = pygame.image.load("pene_alado_grande.png")
+trick_image_rect_opening = trick_image_opening.get_rect()
+
+game_over_trick = pygame.image.load("fondo_trick.png")
+game_over_trick_rect = game_over_trick.get_rect()
+game_over_trick_rect.center = (window_width // 2, window_height // 2)
+
+
+# Función para mostrar la pantalla de inicio
+def pantalla_inicio():
+    intro = True
+    while intro:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+        # Fondo dinámico (reemplaza 'nombre_del_archivo_de_fondo.gif' con el nombre de tu archivo de fondo)
+        opening_screen = pygame.image.load('fondo_pantalla_inicio.png')
+        opening_screen = pygame.transform.scale(opening_screen, (window_width, window_height))
+        display_surface.blit(opening_screen, (0, 0))
+
+        # Título en la parte superior
+        opening_title_text = font.render("Alimenta al Vampiro", True, red)
+        opening_title_rect = opening_title_text.get_rect()
+        opening_title_rect.centerx = window_width // 2
+        opening_title_rect.y = 10
+        display_surface.blit(opening_title_text, opening_title_rect)
+
+        # Información sobre el juego
+        info_text1 = font_small.render("Intenta coger tantas gotas de sangre como sea posible!", True, red, black)
+        info_text2 = font_small.render("Ojo a los penes alados!! Si te lo comes, perderás una vida.", True, red,
+                                       black)
+        info_text3 = font_small.render("Tienes 5 vidas. Cuidalas bien!", True, red, black)
+        info_text4 = font_small.render("A medida que avances, todo irá más rápido.", True, red, black)
+        info_text5 = font_small.render("Para jugar, solo necesitas los botones de arriba y abajo", True,
+                                       red, black)
+
+        display_surface.blit(info_text1, (10, window_height // 2 - 120))
+        display_surface.blit(info_text2, (10, window_height // 2 - 80))
+        display_surface.blit(info_text3, (10, window_height // 2 - 40))
+        display_surface.blit(info_text4, (10, window_height // 2))
+        display_surface.blit(info_text5, (10, window_height // 2 + 40))
+
+        info_text6 = font_small.render("Este eres tu --", True, red, white)
+        info_text7 = font_small.render("Come esto! --", True, red, white)
+        info_text8 = font_small.render("No te comas esto! --", True, red, white)
+
+        display_surface.blit(info_text6, (window_width * 14 / 20, window_height // 2 - 120))
+        display_surface.blit(info_text7, (window_width * 14 / 20, window_height // 2 - 40))
+        display_surface.blit(info_text8, (window_width * 14 / 20, window_height // 2 + 40))
+
+        # Imágenes de elementos del juego
+        display_surface.blit(player_image_opening, (window_width - 90, window_height // 2 - 170))
+        display_surface.blit(blood_image_opening, (window_width - 90, window_height // 2 - 60))
+        display_surface.blit(trick_image_opening, (window_width - 90, window_height // 2 + 20))
+
+        # Botón "Jugar"
+        pygame.draw.rect(display_surface, red, (window_width // 2 - 100, window_height - 60, 200, 50))
+        button_text = font.render("Jugar", True, white)
+        display_surface.blit(button_text, (window_width // 2 - 40, window_height - 50))
+
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+
+        if window_width // 2 - 100 + 200 > mouse[0] > window_width // 2 - 100 and window_height - 60 + 50 > mouse[
+            1] > window_height - 60:
+            if click[0] == 1:
+                intro = False  # Comienza el juego cuando se hace clic en el botón
+
+        intro_sound.play()
+
+        pygame.display.update()
+        clock.tick(15)
+
+
+# Pantalla de inicio
+pantalla_inicio()
+
 # Variables adicionales para controlar los "tricks". Probablidad de que aparezca.
-trick_spawn_chance = 0.002
+trick_spawn_chance = 0.003
 
 # Bucle principal del juego
 pygame.mixer.music.play(-1, 0.0)  # El -1 indica un loop infinito y el 0.0 es que empieza desde el principio
@@ -196,6 +297,7 @@ while running:
     # Verificar la colisión con el "trick"
     elif trick_on_screen and player_rect.colliderect(trick_image_rect):
         player_lives -= 1
+        tricks += 1
         error_trick_sound.play()
         reappear_trick = True
         trick_on_screen = False  # Si colisiona con el "trick", lo quitamos de la pantalla
@@ -228,6 +330,30 @@ while running:
                 # El jugador quiere jugar de nuevo
                 if event.type == pygame.KEYDOWN:
                     score = 0
+                    player_lives = player_starting_lives
+                    player_rect.y = window_height // 2
+                    blood_velocity = blood_starting_velocity
+                    pygame.mixer.music.play(-1, 0.0)
+                    is_paused = False
+                # El jugador no quiere jugar más
+                if event.type == pygame.QUIT:
+                    is_paused = False
+                    running = False
+    elif tricks == 3:
+        display_surface.blit(game_over_trick, game_over_trick_rect)
+        display_surface.blit(trick_text, trick_text_rect)
+        display_surface.blit(trick_text2, trick_text2_rect)
+        display_surface.blit(nico_lose_image, nico_lose_image_rect)
+        trick_game_over_sound.play()
+        pygame.display.update()
+        # Parar el juego hasta que el jugador presione una tecla que hará empezar el juego nuevamente
+        pygame.mixer.music.stop()
+        is_paused = True
+        while is_paused:
+            for event in pygame.event.get():
+                # El jugador quiere jugar de nuevo
+                if event.type == pygame.KEYDOWN:
+                    tricks = 0
                     player_lives = player_starting_lives
                     player_rect.y = window_height // 2
                     blood_velocity = blood_starting_velocity
