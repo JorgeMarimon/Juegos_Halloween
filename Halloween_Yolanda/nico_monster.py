@@ -198,13 +198,12 @@ class Game():
         self.target_monster_type = target_monster.type
         self.target_monster_image = target_monster.image
 
-    def pause_game(self, main_text, sub_text):
+    def pause_game(self, main_text, sub_text, sub_text2):
         """Pause the game"""
         global running
 
         #Set color
         WHITE = (255, 255, 255)
-        BLACK = (0, 0, 0)
 
         #Create the main pause text
         main_text = self.font.render(main_text, True, WHITE)
@@ -214,12 +213,20 @@ class Game():
         #Create the sub pause text
         sub_text = self.font.render(sub_text, True, WHITE)
         sub_rect = sub_text.get_rect()
-        sub_rect.center = (WINDOW_WIDTH//2, WINDOW_HEIGHT//2 + 64)
+        sub_rect.center = (WINDOW_WIDTH//2, WINDOW_HEIGHT//3 - 64)
+
+        # Create the sub pause text2
+        sub_text2 = self.font.render(sub_text2, True, WHITE)
+        sub_rect2 = sub_text2.get_rect()
+        sub_rect2.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 64)
 
         #Display the pause text
-        display_surface.fill(BLACK)
+        opening_screen = pygame.image.load('hallo.jpg')
+        opening_screen = pygame.transform.scale(opening_screen, (WINDOW_WIDTH//1, WINDOW_HEIGHT//3))
+        display_surface.blit(opening_screen, (0, 0))
         display_surface.blit(main_text, main_rect)
         display_surface.blit(sub_text, sub_rect)
+        display_surface.blit(sub_text2, sub_rect2)
         pygame.display.update()
 
         #Pause the game
@@ -339,7 +346,7 @@ my_monster_group = pygame.sprite.Group()
 #Instancio objeto juego con mi jugador y el grupo de monstruos
 #Llamno a las funciones de la clase Game
 my_game = Game(my_player, my_monster_group)
-my_game.pause_game("Nico Monster", "Press 'Enter' to begin")
+my_game.pause_game("Nico Monster", "HeteroBonus: ATRAPA AL MONSTRUO MAS RAPIDO", "Pulsa 'Enter' para JUGAR")
 my_game.start_new_round()
 
 #Bucle juego principal
