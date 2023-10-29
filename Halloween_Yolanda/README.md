@@ -70,11 +70,11 @@ No, las vidas iniciales son 5 y no hay forma de aumentar la cantidad ni de recup
 
 3. **¿Es ilimitado el juego?**
 
-Sí
+Sí, como la vida misma.
 
 4. **¿Motiva ser el más Hetero?**
 
-Eso depende de tu nivel de masculinidad
+Eso depende de tu nivel de masculinidad.
 
 
 
