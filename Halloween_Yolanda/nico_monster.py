@@ -1,9 +1,9 @@
 import pygame, random
 
-#Initialize pygame
+#Inicializo pygame
 pygame.init()
 
-#Set display window
+#Set dimensiones de la pantalla
 WINDOW_WIDTH = 1200
 WINDOW_HEIGHT = 700
 display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -157,7 +157,7 @@ class Game():
                 self.player.lives -= 1
                 #Check game over
                 if self.player.lives <= 0:
-                    self.pause_game("Puntuacion final: " + str(self.score), "Pulsa 'Enter' para jugar de nuevo", "NO ERES EL MAS HETERO")
+                    self.pause_game("HETEROPUNTOS: " + str(self.score), "Pulsa 'Enter' para jugar de nuevo", "NO ERES EL MAS HETERO")
                     self.reset_game()
                 self.player.reset()
 
@@ -193,34 +193,35 @@ class Game():
         self.next_level_sound.play()
 
     def choose_new_target(self):
-        """Choose a new target monster for the player"""
+        """Elegir un nuevo objetivo"""
+        #La función sprites() devuelve una lista o iterable del grupo de monstruos
         target_monster = random.choice(self.monster_group.sprites())
         self.target_monster_type = target_monster.type
         self.target_monster_image = target_monster.image
 
     def pause_game(self, main_text, sub_text, sub_text2):
-        """Pause the game"""
+        """Juego en pause (Cuando es Game Over)"""
         global running
 
         #Set color
         WHITE = (255, 255, 255)
 
-        #Create the main pause text
+        #Crear el main text
         main_text = self.font.render(main_text, True, WHITE)
         main_rect = main_text.get_rect()
         main_rect.center = (WINDOW_WIDTH//2, WINDOW_HEIGHT//2)
 
-        #Create the sub pause text
+        #Crear el sub pause text
         sub_text = self.font.render(sub_text, True, WHITE)
         sub_rect = sub_text.get_rect()
         sub_rect.center = (WINDOW_WIDTH//2, WINDOW_HEIGHT//3 - 64)
 
-        # Create the sub pause text2
+        #Crear el sub pause text2
         sub_text2 = self.font.render(sub_text2, True, WHITE)
         sub_rect2 = sub_text2.get_rect()
         sub_rect2.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 64)
 
-        #Display the pause text
+        #Mostrar por pantalla los texts y añado una imagen centrada arriba
         opening_screen = pygame.image.load('hallo.jpg')
         opening_screen = pygame.transform.scale(opening_screen, (WINDOW_WIDTH//1, WINDOW_HEIGHT//3))
         display_surface.blit(opening_screen, (0, 0))
@@ -229,7 +230,7 @@ class Game():
         display_surface.blit(sub_text2, sub_rect2)
         pygame.display.update()
 
-        #Pause the game
+        #Pausar el juego
         is_paused = True
         while is_paused:
             for event in pygame.event.get():
@@ -242,7 +243,7 @@ class Game():
 
 
     def reset_game(self):
-        """Reset the game"""
+        """Reset juego"""
         self.score = 0
         self.round_number = 0
 
@@ -254,9 +255,9 @@ class Game():
 
 
 class Player(pygame.sprite.Sprite):
-    """A player class that the user can control"""
+    """Clase jugador"""
     def __init__(self):
-        """Initialize the player"""
+        """Inicializamos el jugador"""
         super().__init__()
         self.image = pygame.image.load("nico.png")
         self.rect = self.image.get_rect()
@@ -273,10 +274,10 @@ class Player(pygame.sprite.Sprite):
 
 
     def update(self):
-        """Update the player"""
+        """Actualizar el jugador"""
         keys = pygame.key.get_pressed()
 
-        #Move the player within the bounds of the screen
+        #Mover al jugador dentro de la pantalla
         if keys[pygame.K_LEFT] and self.rect.left > 0:
             self.rect.x -= self.velocity
         if keys[pygame.K_RIGHT] and self.rect.right < WINDOW_WIDTH:
@@ -288,7 +289,7 @@ class Player(pygame.sprite.Sprite):
 
 
     def warp(self):
-        """Warp the player to the bottom 'safe zone'"""
+        """'safe zone'"""
         if self.warps > 0:
             self.warps -= 1
             self.warp_sound.play()
@@ -296,7 +297,7 @@ class Player(pygame.sprite.Sprite):
 
 
     def reset(self):
-        """Resets the players position"""
+        """Resets posicion del jugador"""
         self.rect.centerx = WINDOW_WIDTH//2
         self.rect.bottom = WINDOW_HEIGHT
 
@@ -346,13 +347,14 @@ my_monster_group = pygame.sprite.Group()
 #Instancio objeto juego con mi jugador y el grupo de monstruos
 #Llamno a las funciones de la clase Game
 my_game = Game(my_player, my_monster_group)
-my_game.pause_game("Nico Monster", "HeteroBonus: ATRAPA AL MONSTRUO MAS RAPIDO", "Pulsa 'Enter' para JUGAR")
+my_game.pause_game("Nico Monster", "HeteroBonus: ATRAPA AL MONSTRUO MAS RAPIDO "
+                                   "- CAMBIA VELOCIDAD CON BARRA ESPACIADORA", "Pulsa 'Enter' para JUGAR")
 my_game.start_new_round()
 
 #Bucle juego principal
 running = True
 while running:
-    #Check to see if user wants to quit
+    #Check si el jugador quiere salir del juego
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -361,23 +363,21 @@ while running:
             if event.key == pygame.K_SPACE:
                 my_player.warp()
 
-    #Fill the display
+    #Llenar la pantalla
     display_surface.fill((0, 0, 0))
 
-    #Update and draw sprite groups
+    #Actualizar y dibujar superficie de pantalla
     my_player_group.update()
     my_player_group.draw(display_surface)
 
     my_monster_group.update()
     my_monster_group.draw(display_surface)
 
-    #Update and draw the Game
     my_game.update()
     my_game.draw()
 
-    #Update display and tick clock
     pygame.display.update()
     clock.tick(FPS)
 
-#End the game
+#Salir del juego
 pygame.quit()
