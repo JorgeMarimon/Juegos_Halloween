@@ -33,7 +33,7 @@ Resultado:
 El tiempo es importante ya que existe un bonus si el jugador completa la ronda más rápido. 
 
 
-![Alt text](image-1.png)
+![Alt text](image-3.png)
 
 ## Technologies
 ***
