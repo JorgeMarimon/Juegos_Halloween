@@ -104,7 +104,6 @@ trick_game_over_sound = pygame.mixer.Sound("trick_game_over_sound.wav")
 
 intro_sound = pygame.mixer.Sound("intro_sonido.wav")
 
-
 # Establecer imágenes
 player_image = pygame.image.load("vampiro.png")
 player_rect = player_image.get_rect()
@@ -149,6 +148,10 @@ trick_image_rect_opening = trick_image_opening.get_rect()
 game_over_trick = pygame.image.load("fondo_trick.png")
 game_over_trick_rect = game_over_trick.get_rect()
 game_over_trick_rect.center = (window_width // 2, window_height // 2)
+
+nico_empachado_image = pygame.image.load("nico_empachado.PNG")
+nico_empachado_image_rect = nico_empachado_image.get_rect()
+nico_empachado_image_rect.center = (window_width // 2 + 400, window_height // 2 + 100)
 
 
 # Función para mostrar la pantalla de inicio
@@ -221,7 +224,7 @@ def pantalla_inicio():
 
 # Pantalla de inicio
 pantalla_inicio()
-
+intro_sound.stop()
 # Variables adicionales para controlar los "tricks". Probablidad de que aparezca.
 trick_spawn_chance = 0.003
 
@@ -343,7 +346,7 @@ while running:
         display_surface.blit(game_over_trick, game_over_trick_rect)
         display_surface.blit(trick_text, trick_text_rect)
         display_surface.blit(trick_text2, trick_text2_rect)
-        display_surface.blit(nico_lose_image, nico_lose_image_rect)
+        display_surface.blit(nico_empachado_image, nico_empachado_image_rect)
         trick_game_over_sound.play()
         pygame.display.update()
         # Parar el juego hasta que el jugador presione una tecla que hará empezar el juego nuevamente
