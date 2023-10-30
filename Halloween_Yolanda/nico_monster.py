@@ -259,7 +259,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         """Inicializamos el jugador"""
         super().__init__()
-        self.image = pygame.image.load("nico.png")
+        self.image = pygame.image.load("ynico.png")
         self.rect = self.image.get_rect()
         self.rect.centerx = WINDOW_WIDTH//2
         self.rect.bottom = WINDOW_HEIGHT
