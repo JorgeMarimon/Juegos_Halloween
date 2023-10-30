@@ -25,7 +25,14 @@ Resultado:
 
 
 ![Alt text](image-1.png)
+
+* Pantalla juego con el HUB y el panel de juego
+
 ![Alt text](image-2.png)
+
+* Pantalla de juego en pause cuando se acaban las vidas y puedes pulsar para jugar de nuevo
+
+![Alt text](image-4.png)
 
 ***
 
