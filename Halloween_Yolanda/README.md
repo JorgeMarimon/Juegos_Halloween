@@ -24,7 +24,15 @@ Resultado:
 * Pantalla inicial de entrada al juego. Incluye instrucciones y explicación de los elementos del juego
 
 
-![Alt text](image.png)
+![Alt text](image-1.png)
+
+* Pantalla juego con el HUB y el panel de juego
+
+![Alt text](image-2.png)
+
+* Pantalla de juego en pause cuando se acaban las vidas y puedes pulsar para jugar de nuevo
+
+![Alt text](image-4.png)
 
 ***
 
@@ -32,7 +40,7 @@ Resultado:
 El tiempo es importante ya que existe un bonus si el jugador completa la ronda más rápido. 
 
 
-![Alt text](image-1.png)
+![Alt text](image-3.png)
 
 ## Technologies
 ***
