@@ -72,7 +72,7 @@ surprise_text_rect.center = (window_width // 2 - 170, window_height // 2)
 surprise_text2_rect = surprise_text.get_rect()
 surprise_text2_rect.center = (window_width // 2 - 170, window_height // 2 + 50)
 
-trick_text = font.render("Te has comido demasiados penes alados!", True, pink, black)
+trick_text = font.render("Te has comido demasiados ***** alados!", True, pink, black)
 trick_text2 = font.render("No hay que abusar. Tu pierdes", True, pink, black)
 trick_text_rect = trick_text.get_rect()
 trick_text_rect.center = (window_width // 2 - 100, window_height // 2)
@@ -177,7 +177,7 @@ def pantalla_inicio():
 
         # Información sobre el juego
         info_text1 = font_small.render("Intenta coger tantas gotas de sangre como sea posible!", True, red, black)
-        info_text2 = font_small.render("Ojo a los penes alados!! Si te lo comes, perderás una vida.", True, red,
+        info_text2 = font_small.render("Ojo a los ***** alados!! Si te lo comes, perderás una vida.", True, red,
                                        black)
         info_text3 = font_small.render("Tienes 5 vidas. Cuidalas bien!", True, red, black)
         info_text4 = font_small.render("A medida que avances, todo irá más rápido.", True, red, black)
@@ -357,6 +357,7 @@ while running:
                 # El jugador quiere jugar de nuevo
                 if event.type == pygame.KEYDOWN:
                     tricks = 0
+                    score = 0
                     player_lives = player_starting_lives
                     player_rect.y = window_height // 2
                     blood_velocity = blood_starting_velocity
