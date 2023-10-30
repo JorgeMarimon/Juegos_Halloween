@@ -24,7 +24,8 @@ Resultado:
 * Pantalla inicial de entrada al juego. Incluye instrucciones y explicación de los elementos del juego
 
 
-![Alt text](image.png)
+![Alt text](image-1.png)
+![Alt text](image-2.png)
 
 ***
 
